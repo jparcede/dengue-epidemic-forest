@@ -1,0 +1,38 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite both the manuscript and this software archive."
+title: "Ensemble epidemic forest for city-level dengue surveillance — South Cotabato & General Santos City"
+abstract: >-
+  Reproducible code for the manuscript "Adapting the region-scale epidemic forest
+  for city-level dengue surveillance with quantified linkage uncertainty: a South
+  Cotabato case study with a preliminary cross-province transferability assessment
+  in Region 12, Philippines." The method reconstructs directional dengue
+  transmission among Local Government Units as a Monte-Carlo ensemble of epidemic
+  forests over a probabilistic distance-decay connectivity network, reporting
+  per-edge stability, per-LGU out-degree indices, and per-period LGU branching ratios.
+type: software
+authors:
+  - given-names: "Maria Yulita Trida"
+    family-names: "Tahu"
+  - given-names: "Nuning"
+    family-names: "Nuraini"
+  - given-names: "Kamal"
+    family-names: "Sukandar"
+  - given-names: "Jayrold P."
+    family-names: "Arcede"
+  - given-names: "John Lemuel"
+    family-names: "Dalisay"
+  - given-names: "Alah Baby C."
+    family-names: "Vingno"
+version: "1.1.0"
+doi: "10.5281/zenodo.21208789"
+date-released: "2026-07-06"
+url: "https://github.com/jparcede/dengue-epidemic-forest"
+repository-code: "https://github.com/jparcede/dengue-epidemic-forest"
+license: MIT
+keywords:
+  - dengue
+  - epidemic forest
+  - transmission reconstruction
+  - Monte-Carlo ensemble
+  - dengue surveillance
+  - Philippines

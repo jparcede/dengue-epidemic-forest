@@ -1,0 +1,36 @@
+# === Do NOT publish: internal working notes ===
+HANDOFF_NOTES.md
+KAMAL_BRIEF_*
+KAMAL_cover_email.md
+
+# === Restricted raw DOH line-lists / case registers — DO NOT PUBLISH ===
+South_Cotabato_General Santos.xlsx
+Data/CHD12 DENGUE MDB 2015-2021.xlsx
+Data/Dengue-Data.xlsx
+DailyMat*.mat
+archive/
+
+# Per-province intermediate arrays (regenerable from the pipeline)
+*.npy
+
+# === Copyrighted reference PDFs ===
+references/
+Annals19_EpiForest_MeifangLi*.pdf
+s41598-*.pdf
+haydon2003.pdf
+
+# === Superseded / scratch figures ===
+figures/_old/
+
+# === Build outputs ===
+*.pdf
+*.aux
+*.log
+*.out
+*.synctex.gz
+
+# === Python / Jupyter ===
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.DS_Store

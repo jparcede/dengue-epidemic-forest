@@ -23,9 +23,9 @@ authors:
     family-names: "Dalisay"
   - given-names: "Alah Baby C."
     family-names: "Vingno"
-version: "1.0.0"
-doi: "10.5281/zenodo.21203290"
-date-released: "2026-07-05"
+version: "1.1.0"
+doi: "10.5281/zenodo.21208789"
+date-released: "2026-07-06"
 url: "https://github.com/jparcede/dengue-epidemic-forest"
 repository-code: "https://github.com/jparcede/dengue-epidemic-forest"
 license: MIT

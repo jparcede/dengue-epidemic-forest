@@ -1,6 +1,6 @@
 # Ensemble epidemic forest for city-level dengue surveillance — South Cotabato & General Santos City
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21203290.svg)](https://doi.org/10.5281/zenodo.21203290)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21208789.svg)](https://doi.org/10.5281/zenodo.21208789)
 
 Reproducible code for the manuscript *"Adapting the region-scale epidemic forest
 for city-level dengue surveillance with quantified linkage uncertainty: a South
@@ -81,7 +81,7 @@ If you use this code, please cite both the paper and the archived software:
 
 - **Paper:** full citation to be added on acceptance.
 - **Software archive:** *Ensemble epidemic forest for city-level dengue surveillance*
-  (v1.0.0). Zenodo. https://doi.org/10.5281/zenodo.21203290
+  (v1.1.0). Zenodo. https://doi.org/10.5281/zenodo.21208789
 
 BibTeX for the software archive:
 
@@ -97,8 +97,8 @@ BibTeX for the software archive:
                surveillance --- South Cotabato \& General Santos City}},
   year      = {2026},
   publisher = {Zenodo},
-  version   = {v1.0.0},
-  doi       = {10.5281/zenodo.21203290},
-  url       = {https://doi.org/10.5281/zenodo.21203290}
+  version   = {v1.1.0},
+  doi       = {10.5281/zenodo.21208789},
+  url       = {https://doi.org/10.5281/zenodo.21208789}
 }
 ```
