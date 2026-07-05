@@ -1,0 +1,19 @@
+LGU,Population_2015,Latitude,Longitude,Type,pop_source,coord_status
+Alamada,64596,7.3333,124.5667,municipality,citypopulation.de,geonames
+Aleosan,34345,7.2167,124.6167,municipality,citypopulation.de,estimate_gap
+Antipas,25304,7.2181,125.0281,municipality,citypopulation.de,estimate_gap
+Arakan,48228,7.3833,125.0667,municipality,citypopulation.de,estimate_gap
+Banisilan,43677,7.4908,124.7242,municipality,citypopulation.de,geonames
+Carmen,71276,7.2044,124.7917,municipality,citypopulation.de,geonames
+Kabacan,74711,7.1067,124.8292,municipality,citypopulation.de,geonames
+Kidapawan City,140195,7.0083,125.0894,city (capital),citypopulation.de,geonames
+Libungan,48768,7.2408,124.52,municipality,citypopulation.de,geonames
+M'lang,95070,6.9497,124.8869,municipality,citypopulation.de,estimate_gap
+Magpet,49201,7.1119,125.1133,municipality,citypopulation.de,geonames
+Makilala,83851,6.9517,125.0969,municipality,citypopulation.de,geonames
+Matalam,79361,7.0864,124.9006,municipality,citypopulation.de,geonames
+Midsayap,111719,7.1908,124.5303,municipality,citypopulation.de,geonames
+Pigcawayan,48911,7.2772,124.4256,municipality,citypopulation.de,geonames
+Pikit,64122,7.0544,124.6719,municipality,citypopulation.de,geonames
+President Roxas,47575,7.1544,125.0558,municipality,citypopulation.de,geonames
+Tulunan,56513,6.8344,124.8769,municipality,citypopulation.de,geonames

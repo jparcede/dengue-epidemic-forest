@@ -1,0 +1,8 @@
+Child LGU,P1 parent,P1 stability,P2 parent,P2 stability,P3 parent,P3 stability
+GLAN,primary,93%,primary,96%,MAASIM,46%
+MALUNGON,ALABEL,41%,ALABEL,43%,primary,44%
+ALABEL,primary,96%,primary,72%,primary,98%
+MALAPATAN,GLAN,43%,MAASIM,61%,MAASIM,61%
+KIAMBA,MAITUM,52%,primary,100%,MAITUM,53%
+MAASIM,GLAN,58%,GLAN,61%,primary,67%
+MAITUM,primary,100%,KIAMBA,52%,primary,100%
