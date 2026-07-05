@@ -1,9 +1,9 @@
 setting,dominant_source_P1/P2/P3,GenSan_Rc,Rt,mean_stability,agreement_vs_baseline
-"Exponential, lambda=1",Koronadal City (6) / Tupi (5) / Banga (4),0/0/0,11/11/11,0.84,72%
-"Exponential, lambda=2",Koronadal City (6) / Tupi (5) / Banga (4),0/0/0,11/11/11,0.72,72%
-"Exponential, lambda=3",Koronadal City (5) / Tupi (5) / Banga (4),0/0/0,11/11/11,0.62,75%
-"Exponential, lambda=5 (baseline)",Koronadal City (4) / Koronadal City (4) / Banga (4),0/0/0,5/2/5,0.53,100%
-"Exponential, lambda=8",Koronadal City (4) / Koronadal City (3) / Banga (1),0/0/0,1/0/0,0.53,50%
-"Exponential, lambda=12",Koronadal City (1) / Koronadal City (1) / Banga (1),0/0/0,0/0/0,0.65,31%
-Gaussian (matched half-prob.),Koronadal City (3) / Koronadal City (3) / Banga (3),0/0/0,1/1/2,0.61,61%
-Deterministic adjacency (matched),Koronadal City (3) / Koronadal City (3) / Banga (3),0/0/0,5/2/5,1.00,81%
+"Exponential, lambda=1",Koronadal City (6) / Tupi (6) / Banga (3),0/0/0,5/11/11,0.85,72%
+"Exponential, lambda=2",Koronadal City (6) / Tupi (6) / Banga (3),0/0/0,5/11/11,0.73,72%
+"Exponential, lambda=3",Koronadal City (5) / Tupi (6) / Banga (3),0/0/0,5/11/11,0.64,78%
+"Exponential, lambda=5 (baseline)",Koronadal City (4) / Koronadal City (3) / Banga (3),0/0/0,5/1/5,0.55,100%
+"Exponential, lambda=8",Koronadal City (3) / Koronadal City (2) / Banga (1),0/0/0,1/0/0,0.55,58%
+"Exponential, lambda=12",Koronadal City (1) / Koronadal City (1) / Banga (1),0/0/0,0/0/0,0.66,39%
+Gaussian (matched half-prob.),Koronadal City (3) / Koronadal City (3) / Surallah (3),0/0/0,1/1/2,0.63,67%
+Deterministic adjacency (matched),Koronadal City (3) / Surallah (3) / Banga (2),0/0/0,5/1/5,1.00,78%

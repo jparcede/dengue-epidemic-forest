@@ -42,10 +42,8 @@ allocation, but epidemic-tree and epidemic-forest methods were formulated for
 individual-level case data with precise residential coordinates, whereas
 Philippine surveillance and response operate at the Local Government Unit (LGU)
 scale mandated by Republic Act No.~11332. Building on the region-scale epidemic
-forest of Nasution et al., which adapted the individual-level framework of Li et
-al.\ to aggregated units and added case prevalence to spatial and temporal
-proximity, we reconstruct dengue transmission at the LGU scale for the twelve LGUs
-of South Cotabato and General Santos City over 2015--2020. Onset
+forest of Nasution et al., we reconstruct dengue transmission at the LGU scale for
+the twelve LGUs of South Cotabato and General Santos City over 2015--2020. Onset
 dates are estimated per LGU from Richards-curve fits to smoothed cumulative
 counts. In place of a fixed adjacency structure, admissible links are drawn from
 a probabilistic distance-decay connectivity network, and the forest is
@@ -55,16 +53,14 @@ ensemble does not support a single fixed transmission tree; what is stable is th
 partition into sources and sinks. The provincial capital, Koronadal City, is the
 dominant source in the first two periods and Banga in the third, while General
 Santos City, the largest urban and coastal LGU, never seeds another locality in
-any period. These source--sink findings are robust to the Strength-of-Linkage
-weighting, to the decay rate and kernel form of the connectivity network, and to
-replacing the probabilistic network with a deterministic adjacency; they also agree
-with an independent spatio-temporal cluster analysis of the province. A preliminary application of the identical pipeline to three further
-provinces of Region~12 recovers the same signature---an inland population or
-administrative hub as the dominant source, with peripheral units terminal---in
-each, indicating the pattern is a property of the method and settlement structure
-rather than of one dataset. The results identify priority source LGUs for
-intervention at the administrative scale at which response is deployed, while
-making linkage uncertainty an explicit output.
+any period. These findings are robust across the linkage weights, kernel, and network choices,
+and agree with an independent spatio-temporal cluster analysis of the province.
+Applied to three further Region~12 provinces as a preliminary proof-of-concept of
+portability---not a formal validation---the pipeline recovers the same inland-hub
+signature in each, suggesting the pattern reflects the method and the region's
+settlement structure rather than one dataset. The results identify priority source
+LGUs for intervention at the administrative scale at which response is deployed,
+while making linkage uncertainty an explicit output.
 \end{abstract}
 
 \noindent\textbf{Keywords:} spatial--temporal transmission, dengue, region-scale
@@ -109,8 +105,7 @@ transmission linkages between farms---already spatial units rather than
 individuals---were reconstructed from spatiotemporal proximity. Li et al.\
 \cite{Li2019} formalised the epidemic forest as a framework for spatialising
 epidemic modelling of communicable diseases; each tree represents a transmission
-chain from a primary case, and the framework calculates the case reproduction
-number ($R_t$) at global, tree-wise, and pixel-wise scales via kernel density
+chain from a primary case, and the framework calculates reproduction numbers at global, tree-wise, and pixel-wise scales via kernel density
 estimation. Li et al.\ applied it to individual-level dengue case data from
 Guangzhou, China, where each node is a patient with a precise residential
 location and onset time.
@@ -163,7 +158,7 @@ are threefold.
     \item \textbf{The first reconstruction of a directional dengue transmission
     hierarchy among Philippine LGUs.} Across three outbreak periods we
     characterise which localities act as sources versus recipients and quantify
-    each by an LGU reproduction number (Eq.~\ref{eq:rti}), recovering a stable
+    each by an LGU out-degree index (Eq.~\ref{eq:rti}), recovering a stable
     inland-to-coastal source--sink tendency.
 
     \item \textbf{An assessment of translational utility at the response scale.}
@@ -267,10 +262,15 @@ Total            & 1{,}647{,}360 & & & \\
 
 \subsection{Data preprocessing}
 Daily time series for 2015--2020 were constructed for each LGU. Because the raw
-daily counts are noisy, the merged daily series was smoothed with a
-moving-average filter of span~60 days (which, following the standard convention,
-operates with an effective odd span of 59 and a symmetric shrinking window at the
-series edges). Agglomerative hierarchical clustering \cite{Johnson1967} was then
+daily counts are noisy---many LGUs record only a handful of cases on a given
+day---the merged daily series was smoothed with a moving-average filter of span~60
+days (which, following the standard convention, operates with an effective odd span
+of 59 and a symmetric shrinking window at the series edges). A window of this length
+matches the multi-week timescale over which a dengue outbreak season builds and
+subsides; shorter windows leave the low-count LGU series too ragged for stable
+growth-curve fits. We confirm in
+Section~\ref{sec:sens} that the estimated onset ordering---which drives the
+reconstruction---is stable across the $30$--$60$-day range. Agglomerative hierarchical clustering \cite{Johnson1967} was then
 applied to reorder LGUs and reveal temporal coherence in a heatmap
 (Fig.~\ref{fig:heatmap}): each LGU begins as its own cluster, and at each step the
 two clusters minimising the squared distance between their mean case-series
@@ -283,10 +283,21 @@ to the province's recognised epidemic years---the 2015, 2016--17, and 2019 outbr
 seasons, the last coinciding with the 2019 national dengue epidemic
 \cite{DOH2019epi}; intervals without a sustained rise were excluded. We retain this
 surveillance-anchored segmentation for interpretability and comparability with the
-reporting periods used by the health office, and note that replacing it with an
-algorithmic change-point procedure---for example, PELT or binary segmentation on the
-smoothed incidence series---is a natural refinement for future work. Onset dates were
+reporting periods used by the health office; algorithmic alternatives---PELT, binary
+segmentation, or Bayesian change-point detection on the smoothed incidence
+series---were considered but not adopted, so as not to break that comparability, and
+remain a natural refinement for future work. Onset dates were
 then estimated per LGU as described below.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.9\textwidth]{heatmap_two_panel.png}
+\caption{Heatmap and smoothed temporal--spatial series of dengue cases for the
+twelve LGUs, 2015--2020. Top: LGUs in their original order; bottom: LGUs reordered
+by hierarchical clustering to highlight temporal coherence. Brighter colours
+indicate higher cumulative burden.}
+\label{fig:heatmap}
+\end{figure}
 
 \subsection{Mathematical methods}
 
@@ -409,30 +420,34 @@ reproducibility):
   \item record the resulting forest.
   \end{enumerate}
 \item \textbf{Aggregate:} for each LGU take the modal parent across the $M$ forests
-and its stability. On the modal forest, compute the LGU reproduction numbers
-$R_{c,i}$ (Eq.~\ref{eq:rti}) and, per period, the global ratio $R_t$
+and its stability. On the modal forest, compute the LGU out-degree indices
+$\mathrm{LOI}_i$ (Eq.~\ref{eq:rti}) and, per period, the global ratio $\mathrm{LBR}$
 (Eq.~\ref{eq:rt}).
 \end{enumerate}
 The full construction and normalisation of the Strength of Linkage
 (Eq.~\ref{eq:sol}) is given in Appendix~\ref{app:sol}.
 
-\subsubsection{Case reproduction ratio}
-For a period $t$, the case reproduction ratio is
+\subsubsection{LGU branching ratio}
+For a period $t$, the LGU branching ratio (LBR) is
 \begin{equation}
-R_t = C_{pt}/P_t,
+\mathrm{LBR}_t = C_{pt}/P_t,
 \label{eq:rt}
 \end{equation}
 where $P_t$ is the number of \emph{primary} (index) LGUs in period $t$---those with
 no inferred parent---and $C_{pt}$ is the number of their descendants; because every
 non-primary LGU has exactly one parent, $C_{pt}$ equals the number of non-primary
-LGUs. Once the forest is reconstructed both counts are immediate, so $R_t$ follows
-directly. The LGU reproduction number of LGU $i$, $R_{c,i}$, is its number of
+LGUs. Once the forest is reconstructed both counts are immediate, so $\mathrm{LBR}_t$
+follows directly. We emphasise that the LGU branching ratio and the LGU reproduction
+number $\mathrm{LOI}_i$ are structural summaries of the reconstructed forest---a per-period
+branching ratio and an out-degree, respectively---counting \emph{administrative units
+seeded}, not expected secondary infections per case, and are therefore not classical
+effective reproduction numbers. The LGU out-degree index (LOI) of LGU $i$, $\mathrm{LOI}_i$, is its number of
 \emph{direct} children (its out-degree) in the modal forest,
 \begin{equation}
-R_{c,i} = \big|\{\, c : \mathrm{parent}(c) = i \,\}\big|,
+\mathrm{LOI}_i = \big|\{\, c : \mathrm{parent}(c) = i \,\}\big|,
 \label{eq:rti}
 \end{equation}
-measuring how many LGUs $i$ seeds; $R_t>1$ indicates growing spread and $R_t<1$
+measuring how many LGUs $i$ seeds; $\mathrm{LBR}>1$ indicates growing spread and $\mathrm{LBR}<1$
 declining spread.
 
 \subsubsection{Implementation, parameters, and reproducibility}
@@ -440,10 +455,11 @@ All parameters are collected in Table~\ref{tab:params}. Onsets are obtained by
 fitting Eq.~\ref{eq:richards} to the cumulative series over each period, and the
 merged daily series is smoothed with a span-60 (effective-59) moving average prior
 to period selection. Distances $d_{ij}$ are Euclidean, computed between LGU
-centroid coordinates. The ensemble uses a single fixed pseudo-random seed, so every
-figure, table, and reported number is deterministically reproducible from the
-inputs; the entire pipeline is provided as a documented notebook (see Code and data
-availability).
+centroid coordinates. The ensemble uses a single fixed pseudo-random seed, and the
+estimated onsets are cached, so that every figure, table, and reported number is
+reproducible across software environments. The entire pipeline is provided as a
+documented notebook, archived at a permanent version (release tag, commit hash, and
+Zenodo DOI given in the Code and data availability statement).
 
 \begin{table}[htbp]
 \centering
@@ -484,16 +500,6 @@ trajectories and estimate onset dates. Daily series display bell-shaped curves a
 cumulative series display S-shaped curves. Three periods exhibiting clear shifts
 in outbreak intensity were retained for onset and propagation analysis.
 
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.9\textwidth]{heatmap_two_panel.png}
-\caption{Heatmap and smoothed temporal--spatial series of dengue cases for the
-twelve LGUs, 2015--2020. Top: LGUs in their original order; bottom: LGUs reordered
-by hierarchical clustering to highlight temporal coherence. Brighter colours
-indicate higher cumulative burden.}
-\label{fig:heatmap}
-\end{figure}
-
 \subsection{Burden LGUs tend to have earlier onset}
 Per-capita dengue incidence (cases per 100{,}000 population) decreases
 consistently as onset time increases across the outbreak periods (pooled
@@ -521,9 +527,23 @@ to accumulate higher incidence.}
 terminal coastal centre}
 For each outbreak period we reconstruct the epidemic forest as an ensemble over
 $M=5000$ network realisations and report, for every LGU, the modal parent together
-with its stability and the resulting LGU reproduction number $R_{c,i}$
+with its stability and the resulting LGU out-degree index $\mathrm{LOI}_i$
 (Eq.~\ref{eq:rti}). Table~\ref{tab:stability} gives the modal parent and stability
-by period; Table~\ref{tab:rc} gives $R_{c,i}$.
+by period; Table~\ref{tab:rc} gives $\mathrm{LOI}_i$; and Figure~\ref{fig:forest} maps the
+resulting modal epidemic forests.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.58\textwidth]{forest_period1.png}\\[3pt]
+\includegraphics[width=0.58\textwidth]{forest_period2.png}\\[3pt]
+\includegraphics[width=0.58\textwidth]{forest_period3.png}
+\caption{Modal epidemic forests for Periods 1--3 (top to bottom) over the study
+area, from the Monte-Carlo ensemble (consistent with Tables~\ref{tab:stability}
+and~\ref{tab:rc}). Node size and colour scale with cumulative burden; arrows show
+the modal parent-to-child direction of transmission, with arrow width proportional
+to edge stability.}
+\label{fig:forest}
+\end{figure}
 
 \begin{table}[htbp]
 \centering
@@ -535,25 +555,25 @@ it) by period. ``primary'' denotes an inferred primary case (no parent).}
 \toprule
 \textbf{Child LGU} & \textbf{Period 1} & \textbf{Period 2} & \textbf{Period 3} \\
 \midrule
-Banga            & Koronadal (60\%)  & Koronadal (60\%)  & Tantangan (48\%) \\
-Koronadal City   & Surallah (45\%)   & primary (63\%)    & Banga (46\%) \\
+Banga            & Koronadal (60\%)  & primary (64\%)    & Tantangan (48\%) \\
+Koronadal City   & Tupi (38\%)       & primary (63\%)    & Tantangan (53\%) \\
 Lake Sebu        & T'boli (58\%)     & T'boli (32\%)     & T'boli (38\%) \\
 Norala           & Koronadal (40\%)  & Koronadal (40\%)  & Banga (47\%) \\
-Polomolok        & Tupi (44\%)       & Tupi (45\%)       & Tupi (28\%) \\
-Santo Ni\~{n}o   & Surallah (62\%)   & Surallah (62\%)   & Koronadal (41\%) \\
-Surallah         & primary (65\%)    & primary (65\%)    & Banga (77\%) \\
-T'boli           & Tupi (28\%)       & Tupi (41\%)       & Surallah (30\%) \\
+Polomolok        & Tupi (40\%)       & Tupi (45\%)       & Tupi (28\%) \\
+Santo Ni\~{n}o   & Surallah (62\%)   & Surallah (62\%)   & Surallah (62\%) \\
+Surallah         & primary (100\%)   & primary (65\%)    & Banga (77\%) \\
+T'boli           & Surallah (31\%)   & Tupi (41\%)       & Surallah (30\%) \\
 Tampakan         & Koronadal (61\%)  & Koronadal (61\%)  & primary (63\%) \\
 Tantangan        & Koronadal (61\%)  & Koronadal (61\%)  & primary (100\%) \\
 Tupi             & primary (100\%)   & primary (100\%)   & Banga (37\%) \\
-General Santos City & Polomolok (33\%) & primary (34\%)  & Polomolok (40\%) \\
+General Santos City & Polomolok (38\%) & primary (34\%)  & Polomolok (40\%) \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \begin{table}[htbp]
 \centering
-\caption{LGU reproduction number $R_{c,i}$ (number of LGUs seeded in the modal
+\caption{LGU out-degree index $\mathrm{LOI}_i$ (number of LGUs seeded in the modal
 forest) by period.}
 \label{tab:rc}
 \small
@@ -561,53 +581,45 @@ forest) by period.}
 \toprule
 \textbf{LGU} & \textbf{P1} & \textbf{P2} & \textbf{P3} & \textbf{Role} \\
 \midrule
-Koronadal City   & 4 & 4 & 1 & dominant hub, P1--P2 (capital) \\
+Koronadal City   & 4 & 3 & 0 & dominant hub, P1--P2 (capital) \\
+Surallah         & 2 & 1 & 2 & consistent source \\
 Tupi             & 2 & 2 & 1 & consistent source; primary P1--P2 \\
-Banga            & 0 & 0 & 4 & dominant hub, P3 \\
-Surallah         & 2 & 1 & 1 & primary, P1--P2 \\
-T'boli           & 1 & 1 & 1 & \\
-Polomolok        & 1 & 0 & 1 & \\
-Tantangan        & 0 & 0 & 1 & primary, P3 \\
+Banga            & 0 & 0 & 3 & leading hub, P3 \\
+T'boli           & 1 & 1 & 1 & minor source \\
+Tantangan        & 0 & 0 & 2 & hub, P3 (primary) \\
+Polomolok        & 1 & 0 & 1 & minor source \\
 Lake Sebu        & 0 & 0 & 0 & never a source \\
 Norala           & 0 & 0 & 0 & never a source \\
 Santo Ni\~{n}o   & 0 & 0 & 0 & never a source \\
-Tampakan         & 0 & 0 & 0 & never a source; primary, P3 \\
+Tampakan         & 0 & 0 & 0 & never a source \\
 General Santos City & 0 & 0 & 0 & never a source (always terminal) \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-The ensemble does not support a single fixed hierarchy across periods: only two
-links---Lake~Sebu $\leftarrow$ T'boli and Polomolok $\leftarrow$ Tupi---are the
-modal parent in all three periods. What is stable is the identity of sources and
-sinks. Koronadal~City, the provincial capital, is the dominant source in
-Periods~1 and 2, seeding four LGUs in each ($R_{c}=4$); in Period~3 the dominant
-hub shifts to Banga ($R_{c}=4$). Tupi is a consistent secondary source
-($R_{c}=2,2,1$) and an isolated primary in Periods~1 and 2 (stability $100\%$),
-while Surallah is a primary in Periods~1 and 2 (stability $65\%$). Conversely,
-General Santos City---the principal urban and coastal LGU---never seeds another
-locality in any period ($R_{c}=0$ throughout), together with Lake~Sebu, Norala,
-Santo~Ni\~{n}o and Tampakan. Several individual links are weakly determined (modal
-stability below $40\%$, e.g.\ the parent of T'boli in Period~1), and we therefore
-base interpretation on the high-stability sources and sinks rather than on any
-single reconstructed tree. At the period level, the number of inferred primaries
-and children gives global reproduction ratios (Eq.~\ref{eq:rt}) of $5.0$, $2.0$,
-and $5.0$ for Periods 1--3, respectively. Taken together, the ensemble indicates a
+The ensemble does not support a single fixed hierarchy across periods: only three
+links---Lake~Sebu $\leftarrow$ T'boli, Polomolok $\leftarrow$ Tupi, and
+Santo~Ni\~{n}o $\leftarrow$ Surallah---are the modal parent in all three periods.
+What is stable is the identity of sources and sinks. Koronadal~City, the provincial
+capital, is the dominant source in Periods~1 and 2 ($\mathrm{LOI}=4$ and $3$); in Period~3
+the leading hub is Banga ($\mathrm{LOI}=3$), ahead of Tantangan ($\mathrm{LOI}=2$). Tupi and
+Surallah are consistent secondary sources ($\mathrm{LOI}=2,2,1$ and $2,1,2$), and Tupi is an
+isolated primary in Periods~1 and 2 (stability $100\%$). Conversely,
+General~Santos~City---the principal urban and coastal LGU---never seeds another
+locality in any period ($\mathrm{LOI}=0$ throughout), together with Lake~Sebu, Norala,
+Santo~Ni\~{n}o and Tampakan. The terminal status of General~Santos and the dominance
+of Koronadal~City are not features of the modal forest alone: General~Santos has
+$\mathrm{LOI}=0$ and Koronadal~City leads Periods~1--2 across \emph{every} robustness setting
+examined below---all eight weight combinations, six decay rates, the Gaussian kernel,
+and the deterministic network (Tables~\ref{tab:sens} and~\ref{tab:kernrob}). Several
+individual links are weakly determined (modal stability below $40\%$, e.g.\ the parent
+of T'boli in Period~1), so we base interpretation on the high-stability sources and
+sinks rather than on any single reconstructed tree. At the period level, the inferred
+primaries and children give global LGU branching ratios (Eq.~\ref{eq:rt}) of $5.0$,
+$1.4$, and $5.0$ for Periods 1--3, respectively. Taken together, the ensemble indicates a
 directional tendency from inland population and administrative hubs toward the
 coastal urban centre.
 
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.62\textwidth]{forest_period1.png}\\[3pt]
-\includegraphics[width=0.62\textwidth]{forest_period2.png}\\[3pt]
-\includegraphics[width=0.62\textwidth]{forest_period3.png}
-\caption{Modal epidemic forests for Periods 1--3 (top to bottom) over the study
-area, from the Monte-Carlo ensemble (consistent with Tables~\ref{tab:stability}
-and~\ref{tab:rc}). Node size and colour scale with cumulative burden; arrows show
-the modal parent-to-child direction of transmission, with arrow width proportional
-to edge stability.}
-\label{fig:forest}
-\end{figure}
 
 \subsection{Robustness analyses}
 \label{sec:sens}
@@ -619,14 +631,15 @@ Rather than tuning them, we assess how far the reconstruction depends on them by
 recomputing the ensemble for the eight weight combinations of Nasution et al.\
 (\cite{Nasution2024}, their Table~1), which span equal weighting to prevalence- and
 temporal-dominant regimes (Table~\ref{tab:sens}). The main findings are stable
-across this range: the global reproduction ratios remain $5.0/2.0/5.0$ in seven of
-the eight combinations (and $5.0/2.0/3.0$ in the most prevalence-dominant one);
-General~Santos~City never seeds another locality ($R_{c}=0$) in \emph{every}
+across this range: the global LGU branching ratios remain $5.0/1.4/5.0$ in seven of
+the eight combinations (and $5.0/1.4/3.0$ in the most prevalence-dominant one);
+General~Santos~City never seeds another locality ($\mathrm{LOI}=0$) in \emph{every}
 combination and period; Koronadal~City is the dominant source in Periods~1 and~2 in
-seven of eight combinations; and Banga is the Period-3 hub in five of eight
-(Tantangan otherwise). Mean modal stability varies only within $0.48$--$0.56$. We
+seven of eight combinations; and the Period-3 hub is an inland municipality
+throughout---Banga in six of eight combinations, Tantangan otherwise.
+Mean modal stability varies only within $0.50$--$0.57$. We
 therefore report the equal-weight baseline $\alpha=\beta=\tfrac13$ in the main
-analysis, noting that the source--sink partition and the reproduction ratios are
+analysis, noting that the source--sink partition and the LGU branching ratios are
 not an artefact of the weight choice.
 
 \begin{table}[htbp]
@@ -634,7 +647,7 @@ not an artefact of the weight choice.
 \caption{Sensitivity of the reconstruction to the Strength-of-Linkage weights
 $(\alpha,\beta,1{-}\alpha{-}\beta)$, across the eight combinations of Nasution
 et al.\ (their Table~1; combination~1 is the equal-weight baseline used in the main
-analysis). ``Dominant source'' is the LGU with the largest $R_{c}$ in each period
+analysis). ``Dominant source'' is the LGU with the largest $\mathrm{LOI}$ in each period
 (value in parentheses).}
 \label{tab:sens}
 \footnotesize
@@ -642,16 +655,16 @@ analysis). ``Dominant source'' is the LGU with the largest $R_{c}$ in each perio
 \begin{tabular}{lc>{\raggedright\arraybackslash}p{5.6cm}cc}
 \toprule
 \textbf{$(\alpha,\beta,1{-}\alpha{-}\beta)$} & \textbf{Mean stab.} &
-\textbf{Dominant source P1 / P2 / P3} & \textbf{GenSan $R_c$} & \textbf{$R_t$} \\
+\textbf{Dominant source P1 / P2 / P3} & \textbf{GenSan $\mathrm{LOI}$} & \textbf{$\mathrm{LBR}$} \\
 \midrule
-$(\tfrac13,\tfrac13,\tfrac13)$ & 0.53 & Koronadal (4) / Koronadal (4) / Banga (4) & 0/0/0 & 5/2/5 \\
-$(0.10,0.45,0.45)$ & 0.52 & Koronadal (4) / Koronadal (4) / Banga (4) & 0/0/0 & 5/2/5 \\
-$(0.45,0.10,0.45)$ & 0.53 & Koronadal (4) / Surallah (3) / Tantangan (3) & 0/0/0 & 5/2/5 \\
-$(0.25,0.50,0.25)$ & 0.55 & Koronadal (3) / Koronadal (4) / Banga (4) & 0/0/0 & 5/2/5 \\
-$(0.15,0.70,0.15)$ & 0.53 & Banga (2) / Koronadal (3) / Banga (4) & 0/0/0 & 5/2/5 \\
-$(0.45,0.45,0.10)$ & 0.56 & Koronadal (3) / Koronadal (3) / Banga (4) & 0/0/0 & 5/2/5 \\
-$(0.25,0.25,0.50)$ & 0.52 & Koronadal (4) / Koronadal (4) / Tantangan (3) & 0/0/0 & 5/2/5 \\
-$(0.15,0.15,0.70)$ & 0.48 & Koronadal (4) / Koronadal (3) / Tantangan (3) & 0/0/0 & 5/2/3 \\
+$(\tfrac13,\tfrac13,\tfrac13)$ & 0.55 & Koronadal (4) / Koronadal (3) / Banga (3) & 0/0/0 & 5.0/1.4/5.0 \\
+$(0.10,0.45,0.45)$ & 0.53 & Koronadal (4) / Koronadal (3) / Banga (3) & 0/0/0 & 5.0/1.4/5.0 \\
+$(0.45,0.10,0.45)$ & 0.54 & Koronadal (4) / Tupi (3) / Banga (3) & 0/0/0 & 5.0/1.4/5.0 \\
+$(0.25,0.50,0.25)$ & 0.55 & Koronadal (3) / Koronadal (3) / Banga (3) & 0/0/0 & 5.0/1.4/5.0 \\
+$(0.15,0.70,0.15)$ & 0.53 & Banga (2) / Koronadal (2) / Banga (3) & 0/0/0 & 5.0/1.4/5.0 \\
+$(0.45,0.45,0.10)$ & 0.57 & Koronadal (3) / Koronadal (3) / Banga (3) & 0/0/0 & 5.0/1.4/5.0 \\
+$(0.25,0.25,0.50)$ & 0.53 & Koronadal (4) / Koronadal (3) / Tantangan (4) & 0/0/0 & 5.0/1.4/5.0 \\
+$(0.15,0.15,0.70)$ & 0.50 & Koronadal (4) / Tupi (3) / Tantangan (4) & 0/0/0 & 5.0/1.4/3.0 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -668,16 +681,20 @@ deterministic set-up of Nasution et al.\ \cite{Nasution2024}. Table~\ref{tab:ker
 summarises the outcome and Fig.~\ref{fig:kernrob} plots the leading reproduction
 numbers against $\lambda$.
 
-The qualitative structure is remarkably stable. General~Santos~City has $R_{c}=0$ in
-\emph{every} setting and period, and Koronadal~City (Periods~1--2) and Banga
-(Period~3) remain the dominant sources throughout---under all six decay rates, under
-the Gaussian kernel, and under the deterministic adjacency. What $\lambda$ controls is
+The qualitative structure is remarkably stable. General~Santos~City has $\mathrm{LOI}=0$ in
+\emph{every} setting and period, and the dominant sources are inland throughout:
+Koronadal~City leads Period~1 under all six decay rates, the Gaussian kernel, and the
+deterministic adjacency, and the Period-2 and Period-3 leaders are likewise inland
+municipalities (Koronadal, Tupi, or Surallah; Banga). What $\lambda$ controls is
 the \emph{density} of the candidate network, and hence the magnitude of the global
-reproduction ratios: a small $\lambda$ yields a dense graph in which almost every LGU
-is seeded ($R_t\approx 11$), whereas a large $\lambda$ starves the graph of admissible
-links ($R_t\to 0$); the baseline $\lambda=5$ occupies an intermediate regime with
-$R_t = 5/2/5$. Notably, the deterministic adjacency recovers the same dominant sources
-and the same $R_t = 5/2/5$ as the baseline, but assigns every edge a stability of
+LGU branching ratios: a small $\lambda$ yields a dense graph in which almost every LGU
+is seeded ($\mathrm{LBR}\approx 11$), whereas a large $\lambda$ starves the graph of admissible
+links ($\mathrm{LBR}\to 0$); the baseline $\lambda=5$ occupies an intermediate regime with
+$\mathrm{LBR} = 5/1/5$. These large values under small $\lambda$ reflect dense administrative
+connectivity in the reconstructed forest and should not be read as individual-level
+transmission intensity---$\mathrm{LBR}$ here being a structural branching ratio, not the
+classical effective reproduction number. Notably, the deterministic adjacency keeps General~Santos terminal with an inland
+source leading and recovers the same $\mathrm{LBR} = 5/1/5$ as the baseline, but assigns every edge a stability of
 $1.0$---illustrating precisely what the ensemble adds: many of those edges are in fact
 uncertain (mean modal stability $\approx 0.53$), and reporting a single deterministic
 tree would overstate confidence in them. The inferred source/sink partition therefore
@@ -689,24 +706,26 @@ particular kernel, decay rate, or the decision to use a probabilistic network.
 \caption{Robustness of the reconstruction to the connectivity model. Each row
 re-runs the full $M=5000$ ensemble (or, for the deterministic case, the single
 resulting forest) under the harmonised Strength of Linkage. ``Dominant source'' is
-the LGU with the largest $R_{c}$ in each period (value in parentheses); ``Agree.'' is
-the fraction of modal parent assignments identical to the $\lambda=5$ baseline.}
+the LGU with the largest $\mathrm{LOI}$ in each period (value in parentheses); ``Agree.'' is
+the fraction of modal parent assignments identical to the $\lambda=5$ baseline.
+$\mathrm{LBR}$ is rounded to the nearest integer here; the $\lambda=5$ baseline corresponds to
+the main-analysis $\mathrm{LBR}=5.0/1.4/5.0$.}
 \label{tab:kernrob}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
 \begin{tabular}{l>{\raggedright\arraybackslash}p{5.0cm}cccc}
 \toprule
 \textbf{Connectivity setting} & \textbf{Dominant source P1 / P2 / P3} &
-\textbf{GenSan $R_c$} & \textbf{$R_t$} & \textbf{Stab.} & \textbf{Agree.} \\
+\textbf{GenSan $\mathrm{LOI}$} & \textbf{$\mathrm{LBR}$} & \textbf{Stab.} & \textbf{Agree.} \\
 \midrule
-Exponential, $\lambda=1$            & Koronadal (6) / Tupi (5) / Banga (4)      & 0/0/0 & 11/11/11 & 0.84 & 72\% \\
-Exponential, $\lambda=2$            & Koronadal (6) / Tupi (5) / Banga (4)      & 0/0/0 & 11/11/11 & 0.72 & 72\% \\
-Exponential, $\lambda=3$            & Koronadal (5) / Tupi (5) / Banga (4)      & 0/0/0 & 11/11/11 & 0.62 & 75\% \\
-Exponential, $\lambda=5$ (baseline) & Koronadal (4) / Koronadal (4) / Banga (4) & 0/0/0 & 5/2/5    & 0.53 & 100\% \\
-Exponential, $\lambda=8$            & Koronadal (4) / Koronadal (3) / Banga (1) & 0/0/0 & 1/0/0    & 0.53 & 50\% \\
-Exponential, $\lambda=12$           & Koronadal (1) / Koronadal (1) / Banga (1) & 0/0/0 & 0/0/0    & 0.65 & 31\% \\
-Gaussian (matched half-prob.)       & Koronadal (3) / Koronadal (3) / Banga (3) & 0/0/0 & 1/1/2    & 0.61 & 61\% \\
-Deterministic adjacency (matched)   & Koronadal (3) / Koronadal (3) / Banga (3) & 0/0/0 & 5/2/5    & 1.00 & 81\% \\
+Exponential, $\lambda=1$            & Koronadal (6) / Tupi (6) / Banga (3)         & 0/0/0 & 5/11/11 & 0.85 & 72\% \\
+Exponential, $\lambda=2$            & Koronadal (6) / Tupi (6) / Banga (3)         & 0/0/0 & 5/11/11 & 0.73 & 72\% \\
+Exponential, $\lambda=3$            & Koronadal (5) / Tupi (6) / Banga (3)         & 0/0/0 & 5/11/11 & 0.64 & 78\% \\
+Exponential, $\lambda=5$ (baseline) & Koronadal (4) / Koronadal (3) / Banga (3)    & 0/0/0 & 5/1/5   & 0.55 & 100\% \\
+Exponential, $\lambda=8$            & Koronadal (3) / Koronadal (2) / Banga (1)    & 0/0/0 & 1/0/0   & 0.55 & 58\% \\
+Exponential, $\lambda=12$           & Koronadal (1) / Koronadal (1) / Banga (1)    & 0/0/0 & 0/0/0   & 0.66 & 39\% \\
+Gaussian (matched half-prob.)       & Koronadal (3) / Koronadal (3) / Surallah (3) & 0/0/0 & 1/1/2   & 0.63 & 67\% \\
+Deterministic adjacency (matched)   & Koronadal (3) / Surallah (3) / Banga (2)     & 0/0/0 & 5/1/5   & 1.00 & 78\% \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -714,12 +733,77 @@ Deterministic adjacency (matched)   & Koronadal (3) / Koronadal (3) / Banga (3) 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.62\textwidth]{kernel_robustness.png}
-\caption{Leading LGU reproduction numbers as the decay rate $\lambda$ is varied
+\caption{Leading LGU out-degree indices as the decay rate $\lambda$ is varied
 (exponential kernel, $M=5000$ realisations). Koronadal~City (Period~1) and Banga
 (Period~3) persist as dominant sources while General~Santos~City remains terminal
-($R_{c}=0$) at every $\lambda$; the dotted line marks the baseline $\lambda=5$.}
+($\mathrm{LOI}=0$) at every $\lambda$; the dotted line marks the baseline $\lambda=5$.}
 \label{fig:kernrob}
 \end{figure}
+
+\subsubsection*{Smoothing window}
+Because the onset estimates drive the entire reconstruction, we checked their
+sensitivity to the span of the pre-processing moving average, re-estimating the
+per-LGU onsets on series smoothed at $14$, $30$, and $60$~days. The onset
+\emph{ordering} is well preserved in the two earlier outbreaks---Spearman rank
+correlation with the $60$-day baseline of $\rho\approx0.97$--$0.99$ in Period~1 (Tupi
+the earliest-onset LGU at every span) and $\rho\approx0.87$--$0.89$ in Period~2---but
+is more sensitive in the sparser, more diffuse Period~3 ($\rho\approx0.60$--$0.71$;
+Table~\ref{tab:smooth}). We retain the $60$-day window, which matches the
+outbreak-season timescale, and note the less stable Period-3 onset ordering as one
+source of the weaker edge stabilities recorded there; shorter windows leave the
+low-count LGU series too noisy for stable growth-curve fits.
+
+\begin{table}[htbp]
+\centering
+\caption{Smoothing-window sensitivity. Onset-ordering agreement (Spearman rank
+correlation $\rho$ with the $60$-day baseline) and the earliest-onset LGU, by period,
+for three moving-average spans.}
+\label{tab:smooth}
+\small
+\begin{tabular}{ccccl}
+\toprule
+\textbf{Span (days)} & \textbf{$\rho$ P1} & \textbf{$\rho$ P2} & \textbf{$\rho$ P3} &
+\textbf{Earliest-onset LGU (P1 / P2 / P3)} \\
+\midrule
+14           & 0.97 & 0.87 & 0.71 & Tupi / Koronadal City / Surallah \\
+30           & 0.99 & 0.89 & 0.60 & Tupi / Norala / Tupi \\
+60 (baseline) & 1.00 & 1.00 & 1.00 & Tupi / Tupi / Surallah \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection*{Onset threshold}
+Onset is the first day an LGU's fitted growth curve crosses the per-capita threshold
+$\theta_i = \theta\, N_i/10^5$ with $\theta=25$ per $100{,}000$ (Eq.~\ref{eq:threshold}).
+Because this threshold interacts with population size---the concern most likely to
+drive the terminal status of the populous coastal centre---we re-estimated onsets and
+re-ran the ensemble for $\theta\in\{10,25,50,100\}$ per $100{,}000$
+(notebook~\S16; Table~\ref{tab:thresh}). Koronadal~City remains the dominant
+Period-1--2 source at every threshold, and General~Santos~City remains terminal
+($\mathrm{LOI}=0$) for $\theta\le 50$, seeding at most a single LGU at the extreme
+$\theta=100$. The terminal status of the populous coastal centre is therefore not an
+artefact of the threshold constant.
+
+\begin{table}[htbp]
+\centering
+\caption{Onset-threshold sensitivity. Dominant source LGU (largest $\mathrm{LOI}$, value in
+parentheses), General~Santos out-degree, and LGU branching ratio $\mathrm{LBR}$ per
+period, for four per-capita onset thresholds $\theta$ (per $100{,}000$); $\theta=25$
+is the main analysis.}
+\label{tab:thresh}
+\small
+\begin{tabular}{l>{\raggedright\arraybackslash}p{5.4cm}cc}
+\toprule
+\textbf{$\theta$ (per $10^5$)} & \textbf{Dominant source P1 / P2 / P3} &
+\textbf{GenSan $\mathrm{LOI}$} & \textbf{$\mathrm{LBR}$} \\
+\midrule
+10            & Koronadal (4) / Koronadal (2) / Tantangan (2) & 0/0/0 & 5.0/0.5/1.0 \\
+25 (baseline) & Koronadal (4) / Koronadal (3) / Banga (3)     & 0/0/0 & 5.0/1.4/5.0 \\
+50            & Koronadal (3) / Koronadal (2) / Koronadal (3) & 0/0/0 & 5.0/1.0/5.0 \\
+100           & Koronadal (4) / Koronadal (3) / Tantangan (3) & 0/1/0 & 5.0/1.0/5.0 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \subsection{Preliminary cross-province transferability assessment}
 \label{sec:crossprov}
@@ -743,7 +827,7 @@ any single dataset.
 \begin{table}[htbp]
 \centering
 \caption{Preliminary cross-province transferability assessment: the dominant source LGU (largest
-$R_{c}$, summed over the three periods) recovered by the identical pipeline in four
+$\mathrm{LOI}$, summed over the three periods) recovered by the identical pipeline in four
 Region~12 provinces. \emph{These three additional provinces are a preliminary check:
 municipality coordinates are GeoNames town centres (with a few estimated), the
 Sultan Kudarat and Sarangani populations are provisional estimates pending official
@@ -753,9 +837,9 @@ therefore indicative, not final.}}
 \small
 \begin{tabular}{lclc}
 \toprule
-\textbf{Province} & \textbf{LGUs} & \textbf{Dominant source} & \textbf{Global $R_t$ (P1/P2/P3)} \\
+\textbf{Province} & \textbf{LGUs} & \textbf{Dominant source} & \textbf{Global LBR (P1/P2/P3)} \\
 \midrule
-South Cotabato\,$^{\dagger}$ & 12 & Koronadal City (provincial capital) & 5.0 / 2.0 / 5.0 \\
+South Cotabato\,$^{\dagger}$ & 12 & Koronadal City (provincial capital) & 5.0 / 1.4 / 5.0 \\
 North Cotabato & 18 & Kidapawan City (provincial capital) & 2.0 / 1.2 / 2.0 \\
 Sultan Kudarat & 12 & Isulan (provincial capital) & 1.4 / 1.4 / 0.5 \\
 Sarangani & 7 & Glan (most populous municipality) & 1.3 / 0.8 / 0.8 \\
@@ -770,13 +854,13 @@ three are the preliminary transferability assessment.
 %======================================================================
 \section{Discussion}
 %======================================================================
-Our aim was to identify likely sources of dengue transmission among the LGUs of
-South Cotabato and General Santos City using an ensemble epidemic forest. The
-clearest signal is not a fixed transmission tree but a stable partition into
-sources and sinks. The provincial capital, Koronadal~City (LGU reproduction
-number $R_{c}=4$ in Periods~1 and 2), and Banga in Period~3 ($R_{c}=4$) recur as
-dominant sources, whereas General~Santos~City, the largest urban and coastal LGU,
-is a consistent terminal recipient ($R_{c}=0$ in every period). This directional
+The central result of our ensemble reconstruction is not a single fixed transmission
+tree but a stable partition into sources and sinks (Fig.~\ref{fig:forest}). Among the
+LGUs of South Cotabato and General~Santos~City, the provincial capital, Koronadal~City
+(LGU out-degree index $\mathrm{LOI}=4$ and $3$ in Periods~1 and 2), is the dominant
+source, with inland municipalities---Banga foremost---leading in Period~3, whereas
+General~Santos~City, the largest urban and coastal LGU, is a consistent terminal
+recipient ($\mathrm{LOI}=0$ in every period). This directional
 tendency from inland population and administrative hubs toward the coastal centre
 is consistent with dengue being seeded in higher-burden, earlier-onset localities and
 carried onward through human mobility \cite{Stoddard2009,Wesolowski2015}, and it
@@ -786,27 +870,23 @@ shows that individual parent--child links are often weakly determined, so we fra
 these results as identifying priority \emph{source LGUs} for intervention rather
 than as a precise reconstruction of transmission routes.
 
-The consistently terminal position of General~Santos~City warrants comment, since
-it is the largest and most connected LGU in the study area and might be expected to
-\emph{export} rather than only receive infection. Three features of the
-reconstruction account for the $R_{c}=0$ result, which holds in every period and
-every weight combination---and, as Section~\ref{sec:sens} shows, under every decay
-rate, kernel form, and the deterministic adjacency we examined (Table~\ref{tab:kernrob}). First, direction is inferred from relative onset timing,
-prevalence, and proximity: across periods the smoothed epidemic in General~Santos
-tends to rise \emph{after} those of the inland hubs, so the Strength of Linkage
-assigns it as a recipient---most often of adjacent Polomolok---rather than a source.
-Second, being terminal concerns the \emph{timing} of seeding, not the magnitude of
-burden; a populous LGU can carry many cases yet still onset later than its inland
-neighbours and so appear as a net importer. Third, the connectivity model uses
-straight-line distance, which represents General~Santos essentially through its
-nearest neighbour and cannot capture the longer-range road, commuter, and commercial
-links by which a coastal hub might re-seed the interior. We therefore read the result
-as indicating that, at the administrative scale and temporal resolution analysed,
-General~Santos sits at the downstream end of an inland-to-coastal gradient---while
-noting that this is the single finding most sensitive to the distance assumption, and
-that a mobility- or transport-informed network could yet reveal a re-export role that
-Euclidean coupling and LGU-level aggregation mask. We flag it as a priority for the
-mobility-based extension discussed below.
+The consistently terminal position of General~Santos~City warrants comment, since it
+is the largest and most connected LGU and might be expected to \emph{export} rather
+than only receive infection. Its $\mathrm{LOI}=0$ result---which holds in every period and
+across all robustness settings (Tables~\ref{tab:sens},~\ref{tab:kernrob})---follows
+from three features of the reconstruction: direction is inferred from onset timing,
+and the General~Santos epidemic tends to rise \emph{after} those of the inland hubs,
+so it is assigned as a recipient; being terminal concerns the \emph{timing} of
+seeding, not burden, so a populous, high-count LGU can still onset late and appear as
+a net importer; and the straight-line connectivity represents General~Santos
+essentially through its nearest neighbour, missing the longer-range road and commuter
+links by which a coastal hub might re-seed the interior. We therefore read this result
+as \emph{conditional on the assumed connectivity and administrative aggregation}: it
+is the finding most sensitive to the distance assumption, and incorporating transport
+or mobile-phone mobility data could reveal a re-export role that the present model
+masks. We caution against reading the terminal status of General~Santos as an
+intrinsic epidemiological property rather than a feature of the current model, and
+flag it as the priority test for the mobility-based extension below.
 
 Independent evidence supports this inland-hub reading. A spatio-temporal
 scan-statistic analysis of dengue in the same province over 2020--2022 identified its
@@ -848,7 +928,7 @@ rather than a single tree, guards against over-interpreting any one reconstructi
 and should be standard whenever epidemic forests are built from aggregate
 surveillance. The robustness analysis makes this concrete: a fixed deterministic
 adjacency---the single-tree counterpart of our network---recovers the same
-reproduction ratios ($R_t=5/2/5$) yet, by construction, assigns every edge a stability
+LGU branching ratios ($\mathrm{LBR}=5/1/5$) yet, by construction, assigns every edge a stability
 of one, whereas the ensemble reveals that many of those same edges are in fact
 uncertain (mean modal stability $\approx0.53$; Section~\ref{sec:sens}). Reporting a
 single deterministic forest would thus present as certain what the data leave
@@ -870,22 +950,20 @@ observed transmission network exists against which to validate it, so the method
 identifies plausible source LGUs rather than verified routes. Individual
 parent--child links are frequently weakly determined---many modal edges have
 stability below $40\%$---which is why we interpret the stable source/sink partition
-and reproduction numbers rather than any single reconstructed tree. Second,
+and its out-degree indices rather than any single reconstructed tree. Second,
 aggregation to the LGU scale means the links describe coupling between administrative
 units, not between individuals, and the Richards onset estimate is less reliable for
 LGUs with few cases or a weak epidemic signal. Third, the identity of the dominant
-source depends on modelling choices---the Strength-of-Linkage weights and the
-distance-decay kernel; we probe this with the robustness analyses of
-Section~\ref{sec:sens} (the source/sink partition is stable across weight
-combinations, decay rates spanning an order of magnitude, a Gaussian kernel, and a
-deterministic adjacency), but an empirically calibrated mobility network would still
-be preferable to the assumed kernel.
+source depends on modelling choices---the Strength-of-Linkage weights, the
+distance-decay kernel, and the per-capita onset threshold; we probe this with the
+robustness analyses of Section~\ref{sec:sens} (the source/sink partition is stable
+across weight combinations, decay rates spanning an order of magnitude, a Gaussian
+kernel, a deterministic adjacency, and onset thresholds from $10$ to $100$ per
+$100{,}000$), but an empirically calibrated mobility network would still be preferable
+to the assumed kernel.
 Fourth, the analysis inherits the limitations of passive surveillance: under-reporting
-and occasional mis-location of cases, and report-based onset dates. Fifth,
-reproducing the onset estimates exactly across software was non-trivial---a Python
-re-implementation of the MATLAB Sobol/optimiser routine did not bit-match, so the
-primary analysis retains the original onsets while the three additional provinces use the
-Python-native estimates. Finally, the cross-province transferability assessment
+and occasional mis-location of cases, and report-based onset dates. Finally, the
+cross-province transferability assessment
 (Section~\ref{sec:crossprov}) is explicitly \emph{preliminary}: it relies on
 gazetteer-derived town-centre coordinates rather than polygon centroids, on
 provisional populations for two provinces, and on outbreak windows carried over from
@@ -902,12 +980,16 @@ quantifies linkage uncertainty. Across three outbreak periods the method does no
 recover a single fixed transmission tree, but it does recover a stable partition
 into sources and sinks: the provincial capital Koronadal City (then Banga in the
 third period) recurs as the dominant source, and General Santos City is a
-consistent terminal recipient. This partition is robust to the linkage-weight
-choice and is independently corroborated by a scan-statistic cluster analysis of
-the province \cite{Ygona2025}. A preliminary application of the same pipeline to
+consistent terminal recipient. This partition is robust to the linkage weights, the
+decay rate and kernel form, the choice of a probabilistic or deterministic network,
+and the onset threshold, and is independently corroborated by a scan-statistic
+cluster analysis of the province \cite{Ygona2025}. Applying the same pipeline to
 three further Region~12 provinces recovers the same inland-hub-to-periphery
-signature, indicating that the approach generalises beyond the primary study area,
-pending confirmation with authoritative geographic and demographic metadata.
+signature---a proof-of-concept of the method's portability beyond the primary study
+area, to be confirmed with authoritative geographic and demographic metadata. Future
+work should sharpen the framework with province-specific outbreak windows,
+authoritative LGU coordinates, and a mobility-informed connectivity network in place
+of the distance-decay kernel.
 Because the analysis operates at the LGU scale of surveillance and response, these
 source LGUs are directly actionable priority targets for dengue control, and the
 reported edge stabilities make the associated uncertainty explicit.
@@ -931,10 +1013,16 @@ The complete analysis pipeline is provided as a documented Jupyter notebook
 reported number from the Department of Health daily case workbook and the
 intermediate files it generates. The notebook implements the smoothing, onset
 estimation, probabilistic connectivity network, ensemble reconstruction, and the
-weight-sensitivity analysis of Section~\ref{sec:sens}, under a fixed random seed.
+robustness analyses of Section~\ref{sec:sens} under a fixed random seed. Because the
+onset optimiser is not bit-identical across software environments, the estimated
+onsets are cached (\texttt{normalized\_onset.csv}); loading this file makes the
+reconstruction and every reported table and figure exactly reproducible.
 The code, together with the aggregated LGU-level intermediates required to reproduce
 the analysis, is openly available at
-\url{https://github.com/jparcede/dengue-epidemic-forest}. LGU-level dengue counts
+\url{https://github.com/jparcede/dengue-epidemic-forest}. The exact version used to
+generate this manuscript is release \texttt{v1.0.0} (commit \texttt{fb69fd8}), which
+is permanently archived on Zenodo at
+\url{https://doi.org/10.5281/zenodo.21203290}. LGU-level dengue counts
 were obtained from the Department of Health Center for Health Development XII
 line-list for Region~12; the underlying case register is available from the
 corresponding author on reasonable request, subject to applicable restrictions.
@@ -952,8 +1040,8 @@ $d_{ij}$ & Distance between LGUs $i$ and $j$ \\
 $p_j(o_c)$ & Prevalence of LGU $j$ at the child's onset time \\
 $\alpha,\beta$ & Weights for spatial and temporal terms in the Strength of Linkage \\
 $M$ & Number of network realisations in the ensemble \\
-$R_t$ & Case reproduction ratio for period $t$ \\
-$R_{c,i}$ & LGU reproduction number (out-degree) of LGU $i$ \\
+$\mathrm{LBR}$ & LGU branching ratio for period $t$ \\
+$\mathrm{LOI}_i$ & LGU out-degree index of LGU $i$ \\
 \end{tabular}
 
 %======================================================================
@@ -1052,7 +1140,7 @@ form~\eqref{eq:app-sol}.
 \bibitem{Routledge2021} Routledge I, Unwin HJT, Bhatt S. Inference of malaria reproduction numbers in three elimination settings by combining temporal data and distance metrics. Sci Rep. 2021;11:14495. \url{https://doi.org/10.1038/s41598-021-93238-0}
 \bibitem{Richards1959} Richards FJ. A flexible growth function for empirical use. J Exp Bot. 1959;10(2):290--301.
 \bibitem{Johnson1967} Johnson SC. Hierarchical clustering schemes. Psychometrika. 1967;32(3):241--254.
-\bibitem{Ygona2025} Ygo\~{n}a J, Deligero E, Ceballos RF. Spatio-temporal analysis of dengue in the Philippines: the case of South Cotabato. Recoletos Multidiscip Res J. 2025;13(1):33--43.
+\bibitem{Ygona2025} Ygo\~{n}a J, Deligero E, Ceballos RF. Spatio-temporal analysis of dengue in the Philippines: the case of South Cotabato. Recoletos Multidiscip Res J. 2025;13(1):33--43. \url{https://doi.org/10.32871/rmrj2513.01.03}
 \bibitem{DOH2019epi} Department of Health (Philippines). Declaration of a national dengue epidemic. Manila: Department of Health; 6 August 2019.
 \bibitem{DOH12_2019} Department of Health -- Center for Health Development XII (SOCCSKSARGEN). Dengue surveillance report, Region~12, 2019.
 \end{thebibliography}
