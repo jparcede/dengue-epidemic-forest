@@ -1,8 +1,0 @@
-# Python 3.10. Install with:  pip install -r requirements.txt
-numpy>=1.24
-pandas>=2.0
-scipy>=1.10
-openpyxl>=3.1
-matplotlib>=3.7
-contextily>=1.4        # optional: terrain basemap for the Figure 3 forest maps (needs internet)
-jupyter>=1.0           # to run epidemic_forest_pipeline.ipynb
